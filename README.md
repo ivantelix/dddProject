@@ -1,42 +1,88 @@
-// README.md
-# PHP DDD Project
+# Proyecto DDD con Docker y Makefile
 
-## Requisitos
-- Docker
-- Docker Compose
+## Pasos iniciales
 
-## Configuración
-
-1. Clona el repositorio:
-   ```bash
-   git clone <repo_url>
-   cd project-root
+1. Clonar el repositorio:
+   ```sh
+   git clone git@github.com:ivantelix/dddProject.git
    ```
 
-2. Construye los contenedores:
-   ```bash
-   docker-compose up --build
+2. Ir al directorio raíz del proyecto:
+   ```sh
+   cd nombre-del-proyecto
    ```
 
-3. Accede a la aplicación:
+3. Renombrar el archivo `.env.example` a `.env`:
+   ```sh
+   cp .env.example .env
    ```
-   http://localhost:8000
+
+4. Configurar las variables de entorno en el archivo `.env`:
+   ```ini
+   DB_DRIVER=pdo_mysql
+   DB_HOST=localhost
+   DB_PORT=3307
+   DB_NAME=ddd_db
+   DB_USER=admin
+   DB_PASSWORD=admin
    ```
 
-## Probar el registro de usuario
+5. Instalar las dependencias con Composer:
+   ```sh
+   composer install
+   ```
 
-Usa `curl` para enviar una solicitud de registro:
+6. Levantar los contenedores con Makefile:
+   ```sh
+   make up
+   ```
 
-```bash
-curl -X POST http://localhost:8000 -H "Content-Type: application/json" -d '{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "StrongPass1!"
-}'
-```
+---
 
-## Ejecutar Pruebas
+## Comandos disponibles en el Makefile
 
-```bash
-docker-compose exec app vendor/bin/phpunit
-```
+Este Makefile te permite:
+
+- **Levantar los contenedores** con:
+  ```sh
+  make up
+  ```
+
+- **Detener los contenedores** con:
+  ```sh
+  make down
+  ```
+
+- **Reiniciar la base de datos** (elimina volúmenes y datos) con:
+  ```sh
+  make down-volumes
+  ```
+
+- **Ver logs de los contenedores** con:
+  ```sh
+  make logs
+  ```
+
+- **Ingresar a MySQL dentro del contenedor** con:
+  ```sh
+  make db-shell
+  ```
+
+- **Acceder al contenedor PHP** con:
+  ```sh
+  make php-shell
+  ```
+
+- **Reconstruir los contenedores sin caché** con:
+  ```sh
+  make rebuild
+  ```
+
+- **Ver el estado de los contenedores** con:
+  ```sh
+  make status
+  ```
+
+---
+
+¡Listo! Ahora puedes empezar a trabajar en tu proyecto. 🚀
