@@ -1,7 +1,8 @@
 <?php
 
-use Doctrine\ORM\Tools\Setup;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
 use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -13,13 +14,13 @@ $dotenv->load();
 // Configuración de Doctrine
 $isDevMode = $_ENV['APP_ENV'] === 'development';
 
-$config = Setup::createAnnotationMetadataConfiguration(
-    [__DIR__ . '/../app/Domain'],
-    $isDevMode
+$config = ORMSetup::createAttributeMetadataConfiguration(
+    paths: [__DIR__ . '/../app/Domain'],
+    isDevMode: $isDevMode,
 );
 
 // Conexión usando variables de entorno
-$conn = [
+$conn_params = [
     'driver'   => $_ENV['DB_DRIVER'],
     'host'     => $_ENV['DB_HOST'],
     'port'     => $_ENV['DB_PORT'],
@@ -28,6 +29,6 @@ $conn = [
     'password' => $_ENV['DB_PASSWORD'],
 ];
 
-$entityManager = EntityManager::create($conn, $config);
-
+$connection = DriverManager::getConnection($conn_params, $config);
+$entityManager = new EntityManager($connection, $config);
 return $entityManager;

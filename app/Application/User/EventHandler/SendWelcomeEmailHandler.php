@@ -8,6 +8,6 @@ class SendWelcomeEmailHandler
 {
     public function __invoke(UserRegisteredEvent $event): void
     {
-        echo "Welcome email sent to " . $event->user->email()->value();
+        echo "Welcome email sent to " . $event->getUser()->email()->value() . PHP_EOL;
     }
 }

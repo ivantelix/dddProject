@@ -4,6 +4,7 @@ namespace App\Infrastructure\Persistence;
 
 use App\Domain\User\Entity\User;
 use App\Domain\User\Repository\UserRepositoryInterface;
+use App\Domain\User\ValueObject\Email;
 use App\Domain\User\ValueObject\UserId;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -25,6 +26,11 @@ class DoctrineUserRepository implements UserRepositoryInterface
     public function findById(UserId $id): ?User
     {
         return $this->entityManager->getRepository(User::class)->find($id->value());
+    }
+
+    public function findByEmail(Email $email): ?User
+    {
+        return $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email->value()]);
     }
 
     public function delete(UserId $id): void

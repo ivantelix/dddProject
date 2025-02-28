@@ -2,6 +2,8 @@
 
 namespace App\Domain\User\ValueObject;
 
+use App\Domain\User\Exception\WeakPasswordException;
+
 class Password
 {
     private string $hashedPassword;
@@ -9,7 +11,7 @@ class Password
     public function __construct(string $password)
     {
         if (!$this->isValid($password)) {
-            throw new \InvalidArgumentException("Weak password.");
+            throw new WeakPasswordException($password);
         }
         $this->hashedPassword = password_hash($password, PASSWORD_BCRYPT);
     }

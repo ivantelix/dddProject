@@ -2,6 +2,7 @@
 
 namespace App\Application\User\UseCase;
 
+use App\Domain\User\Exception\UserAlreadyExists;
 use App\Application\User\DTO\{RegisterUserRequest, UserResponseDTO};
 use App\Domain\User\Entity\User;
 use App\Domain\User\ValueObject\{UserId, Name, Email, Password};
@@ -22,8 +23,8 @@ class RegisterUserUseCase
 
     public function execute(RegisterUserRequest $request): UserResponseDTO
     {
-        if ($this->userRepository->findById(new UserId($request->email))) {
-            throw new \Exception("User already exists.");
+        if ($this->userRepository->findByEmail(new Email($request->email))) {
+            throw new UserAlreadyExists($request->email);
         }
 
         $user = new User(
@@ -34,7 +35,6 @@ class RegisterUserUseCase
         );
 
         $this->userRepository->save($user);
-
         $this->eventDispatcher->dispatch(new UserRegisteredEvent($user));
 
         return new UserResponseDTO(

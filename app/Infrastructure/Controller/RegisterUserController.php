@@ -4,41 +4,30 @@ namespace App\Infrastructure\Controller;
 
 use App\Application\User\UseCase\RegisterUserUseCase;
 use App\Application\User\DTO\RegisterUserRequest;
+use App\Infrastructure\DependencyContainer;
 
 class RegisterUserController
 {
-    private RegisterUserUseCase $registerUserUseCase;
- 
-    public function __construct(RegisterUserUseCase $registerUserUseCase)
+    public function handle($requestData): string
     {
-        $this->registerUserUseCase = $registerUserUseCase;
-    }
-
-    public function __invoke(array $requestData): string
-    {
-        return "holasmund";
         $request = new RegisterUserRequest(
-            $requestData['name'],
-            $requestData['email'],
-            $requestData['password']
+            $requestData['name'] ?? '',
+            $requestData['email'] ?? '',
+            $requestData['password'] ?? ''
         );
 
         try {
-            $response = $this->registerUserUseCase->execute($request);
+            $registerUserUseCase = DependencyContainer::get(RegisterUserUseCase::class);
+            $response = $registerUserUseCase->execute($request);
             return json_encode([
                 'status' => 'success',
                 'data' => $response
             ]);
-        } catch (\Exception $e) {
+        } catch (\App\Domain\User\Exception\UserAlreadyExists|\Exception $e) {
             return json_encode([
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
         }
-    }
-
-    public function test(): string
-    {
-        return 'test';
     }
 }
